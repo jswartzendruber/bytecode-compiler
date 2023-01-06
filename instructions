@@ -1,0 +1,11 @@
+push $<const>: Pushes the given constant to the top of the stack
+pop: Removes top value of stack
+add, sub, mul, div: Operates on the two values on the stack, and pushes the result
+cmpj @<label>: jumps to <label> if top two values on stack are equal
+cmpgj @<label>: jumpts to <label> if top value on stack is greater than 2nd value on stack
+ret: returns top value on the stack, and destroys function locals
+call @<label>: Calls function at label. Must push function arguments onto stack beforehand.
+
+Predefined functions:
+_main: Entry point of code
+_print: Prints top value of stack

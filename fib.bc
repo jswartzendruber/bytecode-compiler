@@ -1,0 +1,21 @@
+_main:                # Entry point
+        push $5
+	call @fib
+	call _print
+
+fib:
+#	push n          N is already on the stack, as it is the last arg
+	push 0
+	cmpj @return
+
+	pop           # Remove 0
+	push 1
+	cmpj @return
+	pop           # Remove 1, n is top value on stack
+
+	call @fib
+	call @fib
+	add           # Falls through to return
+
+return:
+	ret
