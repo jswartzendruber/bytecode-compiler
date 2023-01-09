@@ -1,6 +1,9 @@
 use std::collections::HashSet;
+use std::env;
 use std::fs::File;
 use std::io::prelude::*;
+
+mod interpreter;
 
 #[derive(Debug, PartialEq, Clone)]
 enum Tok {
@@ -642,7 +645,7 @@ impl Codegen {
     fn gen_function(function: &FunctionDefinition, output: &mut Output) {
         output.line(&format!("{}:", function.name));
 
-        if (function.name == "main") {
+        if function.name == "main" {
             output.indented_line("push %rbx");
         }
 
@@ -650,7 +653,7 @@ impl Codegen {
             Self::gen_statement(statement, output);
         }
 
-        if (function.name == "main") {
+        if function.name == "main" {
             output.indented_line("pop %rbx");
             output.indented_line("xor %rax, %rax");
         }
@@ -708,14 +711,24 @@ impl Codegen {
 }
 
 fn main() {
-    let mut f = File::open("examples/hello.l").unwrap();
+    let args: Vec<String> = env::args().collect();
+    assert!(args.len() >= 2);
+
+    let interpret = args.iter().filter(|x| x == &"-i").count().eq(&1);
+
+    let path = &args[2];
+    let mut f = File::open(path).unwrap();
     let mut code = String::new();
     f.read_to_string(&mut code).unwrap();
 
-    let lexer = Lexer::new(code);
-    let parser = Parser::new(lexer);
-    // let codegen = Codegen::new(parser);
+    if interpret {
+	interpreter::run_fib();
+    } else {
+	let lexer = Lexer::new(code);
+	let parser = Parser::new(lexer);
+	// let codegen = Codegen::new(parser);
 
-    // let mut out = File::create("out.bc").unwrap();
-    // out.write_all(codegen.output.output.as_bytes()).unwrap();
+	// let mut out = File::create("out.bc").unwrap();
+	// out.write_all(codegen.output.output.as_bytes()).unwrap();
+    }
 }

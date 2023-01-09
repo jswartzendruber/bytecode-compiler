@@ -3,7 +3,7 @@ _main:                # Entry point
 	call @fib
 	call _print
 
-fib:
+@fib:                 # Actual function, more expensive
 #	push n          N is already on the stack, as it is the last arg
 	push 0
 	cmpj @return
@@ -16,6 +16,7 @@ fib:
 	call @fib
 	call @fib
 	add           # Falls through to return
+	ret
 
-return:
+return:               # Psuedo function, just a label
 	ret
